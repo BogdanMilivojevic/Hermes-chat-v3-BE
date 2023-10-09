@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
@@ -48,5 +49,13 @@ export class AuthService {
     const token = await this.jwtService.signAsync({ id: user.id });
 
     return token;
+  }
+
+  async getMe(id: number) {
+    const user = await this.usersService.findById(id);
+
+    if (!user) throw new NotFoundException('No user found');
+
+    return user;
   }
 }
