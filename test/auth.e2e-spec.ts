@@ -3,9 +3,12 @@ import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
 import { User } from 'src/users/user.entity';
+import * as jwt from 'jsonwebtoken';
 
 describe('Login and register test (e2e)', () => {
   let app: INestApplication;
+  let userToken;
+  let user;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -19,7 +22,11 @@ describe('Login and register test (e2e)', () => {
     const email = 'john@test.com';
     const password = '123456z';
 
-    await User.create({ username, email, password });
+    user = await User.create({ username, email, password });
+
+    userToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+      expiresIn: `${process.env.JWT_EXPIRES_IN}`,
+    });
   });
 
   afterAll(async () => {
@@ -90,5 +97,16 @@ describe('Login and register test (e2e)', () => {
         password: '123456z',
       })
       .expect(400);
+  });
+
+  it('should return status 200 if user  access auth/me route ', async () => {
+    return request(app.getHttpServer())
+      .get('/auth/me')
+      .set('Authorization', `Bearer ${userToken}`)
+      .expect(200);
+  });
+
+  it('should return status 401 if user tries to access auth/me unauthorized', async () => {
+    return request(app.getHttpServer()).get('/auth/me').expect(401);
   });
 });
