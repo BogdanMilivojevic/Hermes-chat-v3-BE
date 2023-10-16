@@ -1,8 +1,14 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { User } from './user.entity';
 import helpers from 'src/utils/helpers';
 import * as path from 'path';
+import * as bcrypt from 'bcrypt';
+import { UpdateUserPassword } from './dtos/update-user-password-dto';
 
 @Injectable()
 export class UsersService {
@@ -46,9 +52,8 @@ export class UsersService {
     if (file) {
       data.photo_id = file.path;
 
-      const filePath = path.resolve(user.photo_id);
-
       if (user.photo_id) {
+        const filePath = path.resolve(user.photo_id);
         await helpers.deleteFile(filePath);
       }
     }
@@ -57,10 +62,43 @@ export class UsersService {
 
     const updatedUser = await this.userModel.update(data, {
       where: { id },
-      individualHooks: true,
       returning: true,
     });
 
     return updatedUser;
+  }
+
+  async updateUserPassword(id: number, data: UpdateUserPassword) {
+    const user = await this.userModel.findOne({
+      where: { id },
+    });
+
+    if (!user) throw new NotFoundException('User not found');
+
+    const compareOriginalPassword = await bcrypt.compare(
+      data.originalPassword,
+      user.password,
+    );
+
+    if (!compareOriginalPassword)
+      throw new UnauthorizedException('Original password not correct');
+
+    const { newPassword } = data;
+
+    await this.userModel.update(
+      {
+        password: newPassword,
+      },
+      {
+        where: {
+          id,
+        },
+        individualHooks: true,
+      },
+    );
+
+    return {
+      message: 'Password updated succesfully',
+    };
   }
 }

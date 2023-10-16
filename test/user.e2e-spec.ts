@@ -42,10 +42,22 @@ describe('Login and register test (e2e)', () => {
       .patch('/users/me')
       .send({
         email: 'peter@test.com',
-        password: '123456z',
+        name: 'peteeeer',
       })
       .set('Authorization', `Bearer ${userToken}`)
       .expect(200);
+  });
+
+  it('should return 200 if the user updates his credentials', async () => {
+    const res = await request(app.getHttpServer())
+      .patch('/users/password/me')
+      .send({
+        newPassword: '123456zzz',
+        originalPassword: '123456z',
+      })
+      .set('Authorization', `Bearer ${userToken}`);
+
+    expect(res.statusCode).toEqual(200);
   });
 
   it('should return 401 if the user tries to update his credentials without token', () => {
