@@ -6,7 +6,7 @@ import { AuthModule } from './auth/auth.module';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { User } from './users/user.entity';
 import { ConfigModule } from '@nestjs/config';
-
+import { QueryModule } from './query/query.module';
 //IMPORT CONFIG MODULE FOR ENV BEFORE EVERYTHING SO THAT ENV CAN BE USED
 
 @Module({
@@ -29,6 +29,7 @@ import { ConfigModule } from '@nestjs/config';
     }),
     UsersModule,
     AuthModule,
+    QueryModule,
   ],
   controllers: [AppController],
   providers: [AppService],
