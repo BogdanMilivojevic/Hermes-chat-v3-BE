@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -9,10 +10,16 @@ import helpers from 'src/utils/helpers';
 import * as path from 'path';
 import * as bcrypt from 'bcrypt';
 import { UpdateUserPassword } from './dtos/update-user-password-dto';
+import { UsersSearchDto } from './dtos/user-search-dto';
+import { QueryService } from 'src/query/query.service';
+import { QueryTypes } from 'sequelize';
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectModel(User) private userModel: typeof User) {}
+  constructor(
+    @InjectModel(User) private userModel: typeof User,
+    private queryService: QueryService,
+  ) {}
 
   async create(username: string, email: string, password: string) {
     const user = await this.userModel.create({
@@ -100,5 +107,17 @@ export class UsersService {
     return {
       message: 'Password updated succesfully',
     };
+  }
+
+  async usersSearch(query: UsersSearchDto) {
+    const { username } = query;
+
+    if (!username) throw new BadRequestException('Please send username query');
+    const users = await this.userModel.sequelize.query(
+      this.queryService.userSearch(username),
+      { type: QueryTypes.SELECT },
+    );
+
+    return users;
   }
 }

@@ -1,7 +1,9 @@
 import {
   Body,
   Controller,
+  Get,
   Patch,
+  Query,
   Req,
   UploadedFile,
   UseGuards,
@@ -16,6 +18,7 @@ import { uploadProfilePicture } from 'src/utils/multerOptions';
 import { AuthenticationGuard } from 'src/guards/authentication.guard';
 import { Request } from 'express';
 import { UpdateUserPassword } from './dtos/update-user-password-dto';
+import { UsersSearchDto } from './dtos/user-search-dto';
 
 @UseGuards(AuthenticationGuard)
 @Controller('users')
@@ -44,5 +47,12 @@ export class UsersController {
     );
 
     return res.message;
+  }
+
+  @Get('/search')
+  async userSearch(@Query() query: UsersSearchDto) {
+    const users = this.usersService.usersSearch(query);
+
+    return users;
   }
 }

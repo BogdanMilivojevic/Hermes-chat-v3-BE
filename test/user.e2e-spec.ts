@@ -65,8 +65,24 @@ describe('Login and register test (e2e)', () => {
       .patch('/users/me')
       .send({
         email: 'peter@test.com',
-        password: '123456z',
       })
       .expect(401);
+  });
+
+  it('should return 200 if the user does search successfully', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/users/search')
+      .query({ username: 'peter' })
+      .set('Authorization', `Bearer ${userToken}`);
+
+    expect(res.statusCode).toEqual(200);
+  });
+
+  it('should return 400 if the user performs search without token', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/users/search')
+      .query({ username: 'peter' });
+
+    expect(res.statusCode).toEqual(401);
   });
 });
