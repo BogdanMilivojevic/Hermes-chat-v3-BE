@@ -1,4 +1,5 @@
 import { Expose } from 'class-transformer';
+import { User } from '../user.entity';
 
 export class UserResponseDto {
   @Expose()
@@ -15,4 +16,10 @@ export class UserResponseDto {
 
   @Expose()
   public updatedAt: string;
+
+  @Expose()
+  public type: string;
+
+  @Expose()
+  public relationshipId: number;
 }
