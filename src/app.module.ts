@@ -7,6 +7,7 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { User } from './users/user.entity';
 import { ConfigModule } from '@nestjs/config';
 import { QueryModule } from './query/query.module';
+import { UserRelationship } from './users/user-relationship.entity';
 //IMPORT CONFIG MODULE FOR ENV BEFORE EVERYTHING SO THAT ENV CAN BE USED
 
 @Module({
@@ -25,7 +26,7 @@ import { QueryModule } from './query/query.module';
         process.env.NODE_ENV === 'development'
           ? process.env.DB_DEV
           : process.env.DB_TEST,
-      models: [User],
+      models: [User, UserRelationship],
     }),
     UsersModule,
     AuthModule,

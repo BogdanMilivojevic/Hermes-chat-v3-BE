@@ -2,10 +2,12 @@ import {
   BeforeCreate,
   BeforeUpdate,
   Column,
+  HasMany,
   Model,
   Table,
 } from 'sequelize-typescript';
 import * as bcrypt from 'bcrypt';
+import { UserRelationship } from './user-relationship.entity';
 
 @Table
 export class User extends Model {
@@ -20,6 +22,9 @@ export class User extends Model {
 
   @Column
   photo_id: string;
+
+  @HasMany(() => UserRelationship)
+  userRelationship: UserRelationship[];
 
   @BeforeCreate
   static async hashPassword(user: User) {

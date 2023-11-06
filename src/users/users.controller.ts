@@ -1,8 +1,10 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Patch,
+  Post,
   Query,
   Req,
   UploadedFile,
@@ -19,12 +21,17 @@ import { AuthenticationGuard } from 'src/guards/authentication.guard';
 import { Request } from 'express';
 import { UpdateUserPassword } from './dtos/update-user-password-dto';
 import { UsersSearchDto } from './dtos/user-search-dto';
+import { UserRelationshipService } from './user-relationship.service';
+import { FriendRequestDto } from './dtos/friend-request-dto';
 
 @UseGuards(AuthenticationGuard)
 @Controller('users')
 @Serialize(UserResponseDto)
 export class UsersController {
-  constructor(private usersService: UsersService) {}
+  constructor(
+    private usersService: UsersService,
+    private userRelationshipService: UserRelationshipService,
+  ) {}
 
   @UseInterceptors(FileInterceptor('file', uploadProfilePicture))
   @Patch('/me')
@@ -54,5 +61,47 @@ export class UsersController {
     const users = this.usersService.usersSearch(query);
 
     return users;
+  }
+
+  @Post('/friend-request')
+  async sendFriendRequest(
+    @Body() body: FriendRequestDto,
+    @Req() request: Request,
+  ) {
+    const friendRequest = await this.userRelationshipService.create(
+      request.user.id,
+      body.id,
+    );
+
+    return friendRequest;
+  }
+
+  @Get('/friend-request')
+  async indexFriendRequest(@Req() request: Request) {
+    const usersFriendRequests =
+      await this.userRelationshipService.index(request);
+
+    return usersFriendRequests;
+  }
+
+  @Patch('/friend-request/:id')
+  async updateFriendRequest(@Req() request: Request) {
+    const resposne = await this.userRelationshipService.update(request);
+
+    return resposne;
+  }
+
+  @Get('/friends')
+  async indexFriends(@Req() request: Request) {
+    const friends = await this.userRelationshipService.indexFriends(request);
+
+    return friends;
+  }
+
+  @Delete('/friends/:id')
+  async deleteFriend(@Req() request: Request) {
+    const response = await this.userRelationshipService.deleteFriend(request);
+
+    return response;
   }
 }
