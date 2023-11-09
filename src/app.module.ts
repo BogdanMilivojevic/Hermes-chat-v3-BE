@@ -8,6 +8,9 @@ import { User } from './users/user.entity';
 import { ConfigModule } from '@nestjs/config';
 import { QueryModule } from './query/query.module';
 import { UserRelationship } from './users/user-relationship.entity';
+import { ConversationModule } from './conversation/conversation.module';
+import { Conversation } from './conversation/conversation.entity';
+import { ConversationUser } from './conversation/conversation-user.entity';
 //IMPORT CONFIG MODULE FOR ENV BEFORE EVERYTHING SO THAT ENV CAN BE USED
 
 @Module({
@@ -26,11 +29,12 @@ import { UserRelationship } from './users/user-relationship.entity';
         process.env.NODE_ENV === 'development'
           ? process.env.DB_DEV
           : process.env.DB_TEST,
-      models: [User, UserRelationship],
+      models: [User, UserRelationship, Conversation, ConversationUser],
     }),
     UsersModule,
     AuthModule,
     QueryModule,
+    ConversationModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,6 +1,7 @@
 import {
   BeforeCreate,
   BeforeUpdate,
+  BelongsToMany,
   Column,
   HasMany,
   Model,
@@ -8,6 +9,8 @@ import {
 } from 'sequelize-typescript';
 import * as bcrypt from 'bcrypt';
 import { UserRelationship } from './user-relationship.entity';
+import { ConversationUser } from 'src/conversation/conversation-user.entity';
+import { Conversation } from 'src/conversation/conversation.entity';
 
 @Table
 export class User extends Model {
@@ -25,6 +28,12 @@ export class User extends Model {
 
   @HasMany(() => UserRelationship)
   userRelationship: UserRelationship[];
+
+  @HasMany(() => ConversationUser)
+  conversationUser: ConversationUser[];
+
+  @BelongsToMany(() => Conversation, () => ConversationUser)
+  conversations: Conversation[];
 
   @BeforeCreate
   static async hashPassword(user: User) {
