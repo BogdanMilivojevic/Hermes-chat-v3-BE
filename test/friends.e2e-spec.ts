@@ -5,7 +5,7 @@ import { AppModule } from '../src/app.module';
 import * as jwt from 'jsonwebtoken';
 import { User } from 'src/users/user.entity';
 
-describe('Login and register test (e2e)', () => {
+describe('Friend request test (e2e)', () => {
   let app: INestApplication;
   let userToken;
   let userTwoToken;
