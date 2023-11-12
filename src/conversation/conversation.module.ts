@@ -8,11 +8,12 @@ import { AuthModule } from 'src/auth/auth.module';
 import { User } from 'src/users/user.entity';
 
 @Module({
-  controllers: [ConversationController],
-  providers: [ConversationService],
   imports: [
     SequelizeModule.forFeature([Conversation, ConversationUser, User]),
     AuthModule,
   ],
+  controllers: [ConversationController],
+  providers: [ConversationService],
+  exports: [ConversationService],
 })
 export class ConversationModule {}

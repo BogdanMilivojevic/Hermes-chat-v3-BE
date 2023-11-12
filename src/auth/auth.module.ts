@@ -6,13 +6,12 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { User } from 'src/users/user.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { QueryService } from 'src/query/query.service';
+import { QueryModule } from 'src/query/query.module';
 
 @Module({
-  providers: [AuthService, UsersService, QueryService],
-  controllers: [AuthController],
   imports: [
     SequelizeModule.forFeature([User]),
+    QueryModule,
     JwtModule.registerAsync({
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
@@ -23,6 +22,8 @@ import { QueryService } from 'src/query/query.service';
       }),
     }),
   ],
+  providers: [AuthService, UsersService],
+  controllers: [AuthController],
   exports: [JwtModule],
 })
 export class AuthModule {}

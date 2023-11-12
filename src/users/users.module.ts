@@ -9,9 +9,9 @@ import { UserRelationship } from './user-relationship.entity';
 import { UserRelationshipService } from './user-relationship.service';
 
 @Module({
+  imports: [SequelizeModule.forFeature([User, UserRelationship]), AuthModule],
   controllers: [UsersController],
   providers: [UsersService, QueryService, UserRelationshipService],
-  imports: [SequelizeModule.forFeature([User, UserRelationship]), AuthModule],
   exports: [UsersService],
 })
 export class UsersModule {}

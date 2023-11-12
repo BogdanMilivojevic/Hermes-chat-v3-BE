@@ -4,6 +4,7 @@ import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
 import * as jwt from 'jsonwebtoken';
 import { User } from 'src/users/user.entity';
+import { UserRelationship } from 'src/users/user-relationship.entity';
 
 describe('Conversation create test (e2e)', () => {
   let app: INestApplication;
@@ -46,16 +47,33 @@ describe('Conversation create test (e2e)', () => {
       password: passwordThree,
     });
 
+    const friendRequest = await UserRelationship.create({
+      receiver_user_id: user.id,
+      sender_user_id: userTwo.id,
+    });
+
+    await UserRelationship.update(
+      {
+        type: 'friend',
+      },
+      {
+        where: {
+          id: friendRequest.id,
+        },
+      },
+    );
+
     userToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
       expiresIn: `${process.env.JWT_EXPIRES_IN}`,
     });
   });
 
-  it('should return 200 if the user creates conversation with other users', () => {
+  it('should return 200 if the user send message in the conversation', () => {
     return request(app.getHttpServer())
-      .post('/conversation')
+      .post('/messages')
       .send({
-        friendsId: [userTwo.id, userThree.id],
+        friendsId: [userTwo.id],
+        text: 'Hello there',
       })
       .set('Authorization', `Bearer ${userToken}`)
       .expect(201);
@@ -63,7 +81,7 @@ describe('Conversation create test (e2e)', () => {
 
   it('should return 500 if the frinedsId is not sent', () => {
     return request(app.getHttpServer())
-      .post('/conversation')
+      .post('/messages')
       .set('Authorization', `Bearer ${userToken}`)
       .expect(500);
   });
