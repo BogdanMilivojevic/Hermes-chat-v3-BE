@@ -58,7 +58,7 @@ export class ConversationService {
       );
 
       await t.commit();
-      return 'conversation created';
+      return conversation;
     } catch (error) {
       console.log(error);
       await t.rollback();

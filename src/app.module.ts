@@ -11,6 +11,9 @@ import { UserRelationship } from './users/user-relationship.entity';
 import { ConversationModule } from './conversation/conversation.module';
 import { Conversation } from './conversation/conversation.entity';
 import { ConversationUser } from './conversation/conversation-user.entity';
+import { MessagesModule } from './messages/messages.module';
+import { Message } from './messages/messages.entity';
+import { File } from './messages/file.entity';
 //IMPORT CONFIG MODULE FOR ENV BEFORE EVERYTHING SO THAT ENV CAN BE USED
 
 @Module({
@@ -29,12 +32,20 @@ import { ConversationUser } from './conversation/conversation-user.entity';
         process.env.NODE_ENV === 'development'
           ? process.env.DB_DEV
           : process.env.DB_TEST,
-      models: [User, UserRelationship, Conversation, ConversationUser],
+      models: [
+        User,
+        UserRelationship,
+        Conversation,
+        ConversationUser,
+        Message,
+        File,
+      ],
     }),
     UsersModule,
     AuthModule,
     QueryModule,
     ConversationModule,
+    MessagesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
