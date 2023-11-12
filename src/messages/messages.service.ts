@@ -24,14 +24,19 @@ export class MessagesService {
     const t = await this.sequelize.transaction();
 
     try {
-      const conversation = await this.conversationService.create(
-        req.user.id,
-        body.friendsId,
-      );
+      let conversation;
+      if (!body.conversationId) {
+        conversation = await this.conversationService.create(
+          req.user.id,
+          body.friendsId,
+        );
+      }
 
       const message = await this.messageModel.create(
         {
-          conversation_id: conversation.id,
+          conversation_id: body.conversationId
+            ? body.conversationId
+            : conversation.id,
           user_id: req.user.id,
           text: body.text,
         },
