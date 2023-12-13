@@ -7,9 +7,14 @@ import { AuthModule } from 'src/auth/auth.module';
 import { QueryService } from 'src/query/query.service';
 import { UserRelationship } from './user-relationship.entity';
 import { UserRelationshipService } from './user-relationship.service';
+import { QueryModule } from 'src/query/query.module';
 
 @Module({
-  imports: [SequelizeModule.forFeature([User, UserRelationship]), AuthModule],
+  imports: [
+    SequelizeModule.forFeature([User, UserRelationship]),
+    AuthModule,
+    QueryModule,
+  ],
   controllers: [UsersController],
   providers: [UsersService, QueryService, UserRelationshipService],
   exports: [UsersService],

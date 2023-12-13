@@ -6,13 +6,19 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { User } from './user.entity';
-import helpers from 'src/utils/helpers';
 import * as path from 'path';
 import * as bcrypt from 'bcrypt';
 import { UpdateUserPassword } from './dtos/update-user-password-dto';
 import { UsersSearchDto } from './dtos/user-search-dto';
 import { QueryService } from 'src/query/query.service';
 import { QueryTypes } from 'sequelize';
+import { Request } from 'express';
+import helpers from 'src/utils/helpers';
+
+interface PendingUsersIdsI {
+  receiver_user_id?: number;
+  sender_user_id?: number;
+}
 
 @Injectable()
 export class UsersService {
@@ -109,15 +115,42 @@ export class UsersService {
     };
   }
 
-  async usersSearch(query: UsersSearchDto) {
+  async usersSearch(query: UsersSearchDto, req: Request) {
     const { username } = query;
 
     if (!username) throw new BadRequestException('Please send username query');
-    const users = await this.userModel.sequelize.query(
-      this.queryService.userSearch(username),
+    const users: User[] = await this.userModel.sequelize.query(
+      this.queryService.userSearch(username, req.user.id),
       { type: QueryTypes.SELECT },
     );
 
-    return users;
+    const receivedUsersIds = [];
+    const senderUsersIds = [];
+    const resultReceiver: PendingUsersIdsI[] =
+      await this.userModel.sequelize.query(
+        this.queryService.receiverUsers(req.user.id),
+        { type: QueryTypes.SELECT },
+      );
+    resultReceiver.forEach((value) => {
+      receivedUsersIds.push(value.receiver_user_id);
+    });
+
+    const resultSender: PendingUsersIdsI[] =
+      await this.userModel.sequelize.query(
+        this.queryService.senderUsers(req.user.id),
+        { type: QueryTypes.SELECT },
+      );
+
+    resultSender.forEach((value) => {
+      senderUsersIds.push(value.sender_user_id);
+    });
+
+    const filteredUsers = users.filter(
+      (user) =>
+        !receivedUsersIds.includes(user.id) &&
+        !senderUsersIds.includes(user.id),
+    );
+
+    return filteredUsers;
   }
 }

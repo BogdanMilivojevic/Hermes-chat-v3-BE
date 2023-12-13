@@ -24,4 +24,10 @@ export class UserResponseDto {
 
   @Expose()
   public relationshipId: number;
+
+  @Expose()
+  public conversationId: number;
+
+  @Expose()
+  public token: string;
 }
