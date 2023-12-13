@@ -1,12 +1,15 @@
-import { IsArray, IsString } from 'class-validator';
+import { Optional } from '@nestjs/common';
+import { Type } from 'class-transformer';
+import { IsArray } from 'class-validator';
 
 export class CreateMessageDto {
-  @IsArray()
+  @Optional()
   friendsId: number[];
 
-  @IsString()
+  @Optional()
   text: string;
 
-  @IsString()
+  @Optional()
+  @Type(() => Number)
   conversationId?: number;
 }

@@ -5,9 +5,10 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { UserRelationship } from './user-relationship.entity';
-import { Op } from 'sequelize';
+import { Op, QueryTypes } from 'sequelize';
 import { User } from './user.entity';
 import { Request } from 'express';
+import { QueryService } from 'src/query/query.service';
 
 @Injectable()
 export class UserRelationshipService {
@@ -15,6 +16,7 @@ export class UserRelationshipService {
     @InjectModel(UserRelationship)
     private userRelationshipModel: typeof UserRelationship,
     @InjectModel(User) private userModel: typeof User,
+    private readonly queryService: QueryService,
   ) {}
 
   async create(senderId: number, receiverId: number) {
@@ -152,7 +154,20 @@ export class UserRelationshipService {
             },
           });
 
-          response.push({ relationshipId: value.id, ...user.dataValues });
+          const users = [request.user.id, user.id];
+
+          const conversationId =
+            await this.userRelationshipModel.sequelize.query(
+              this.queryService.findConversation(users),
+              { type: QueryTypes.SELECT },
+            );
+
+          const [id] = Object.values(conversationId[0]);
+
+          response.push({
+            ...user.dataValues,
+            conversationId: id,
+          });
         }),
       );
 

@@ -57,8 +57,8 @@ export class UsersController {
   }
 
   @Get('/search')
-  async userSearch(@Query() query: UsersSearchDto) {
-    const users = this.usersService.usersSearch(query);
+  async userSearch(@Query() query: UsersSearchDto, @Req() request: Request) {
+    const users = this.usersService.usersSearch(query, request);
 
     return users;
   }

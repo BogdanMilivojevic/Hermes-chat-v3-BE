@@ -14,6 +14,7 @@ import { ConversationUser } from './conversation/conversation-user.entity';
 import { MessagesModule } from './messages/messages.module';
 import { Message } from './messages/messages.entity';
 import { File } from './messages/file.entity';
+import { GatewayModule } from './gateway/gateway.module';
 //IMPORT CONFIG MODULE FOR ENV BEFORE EVERYTHING SO THAT ENV CAN BE USED
 
 @Module({
@@ -46,6 +47,7 @@ import { File } from './messages/file.entity';
     QueryModule,
     ConversationModule,
     MessagesModule,
+    GatewayModule,
   ],
   controllers: [AppController],
   providers: [AppService],

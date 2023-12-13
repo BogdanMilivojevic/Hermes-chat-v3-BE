@@ -6,6 +6,7 @@ import { Message } from './messages.entity';
 import { AuthModule } from 'src/auth/auth.module';
 import { File } from './file.entity';
 import { ConversationModule } from 'src/conversation/conversation.module';
+import { WsGateway } from 'src/gateway/gateway';
 
 @Module({
   imports: [
@@ -14,6 +15,6 @@ import { ConversationModule } from 'src/conversation/conversation.module';
     ConversationModule,
   ],
   controllers: [MessagesController],
-  providers: [MessagesService],
+  providers: [MessagesService, WsGateway],
 })
 export class MessagesModule {}

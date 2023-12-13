@@ -19,7 +19,7 @@ export class MessagesService {
   async create(
     req: Request,
     body: CreateMessageDto,
-    file: Express.Multer.File,
+    files: Array<Express.Multer.File>,
   ) {
     const t = await this.sequelize.transaction();
 
@@ -43,20 +43,40 @@ export class MessagesService {
         { transaction: t },
       );
 
-      if (file) {
-        await this.fileModel.create(
-          {
-            attachable_type: 'message',
-            attachable_id: message.id,
-            url: file.path,
-          },
-          { transaction: t },
+      if (files) {
+        await Promise.all(
+          files.map(async (file) => {
+            await this.fileModel.create(
+              {
+                attachable_type: 'message',
+                attachable_id: message.id,
+                url: file.path,
+              },
+              { transaction: t },
+            );
+          }),
         );
       }
 
       await t.commit();
 
-      return 'message created';
+      let response;
+      if (files) {
+        const url = [];
+        files.map(async (file) => {
+          url.push(file.path);
+        });
+        response = {
+          id: message.id,
+          user_id: message.user_id,
+          text: message.text,
+          createdAt: message.createdAt,
+          updatedAt: message.updatedAt,
+          url,
+        };
+      }
+
+      return response;
     } catch (error) {
       console.log(error);
       await t.rollback();
