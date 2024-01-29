@@ -66,14 +66,27 @@ export class MessagesService {
         files.map(async (file) => {
           url.push(file.path);
         });
-        response = {
-          id: message.id,
-          user_id: message.user_id,
-          text: message.text,
-          createdAt: message.createdAt,
-          updatedAt: message.updatedAt,
-          url,
-        };
+
+        if (url.length > 0) {
+          response = {
+            id: message.id,
+            user_id: message.user_id,
+            text: message.text,
+            createdAt: message.createdAt,
+            updatedAt: message.updatedAt,
+            url,
+          };
+        }
+
+        if (url.length === 0) {
+          response = {
+            id: message.id,
+            user_id: message.user_id,
+            text: message.text,
+            createdAt: message.createdAt,
+            updatedAt: message.updatedAt,
+          };
+        }
       }
 
       return response;

@@ -23,14 +23,16 @@ import { UpdateUserPassword } from './dtos/update-user-password-dto';
 import { UsersSearchDto } from './dtos/user-search-dto';
 import { UserRelationshipService } from './user-relationship.service';
 import { FriendRequestDto } from './dtos/friend-request-dto';
+import { WsGateway } from 'src/gateway/gateway';
 
 @UseGuards(AuthenticationGuard)
 @Controller('users')
 @Serialize(UserResponseDto)
 export class UsersController {
   constructor(
-    private usersService: UsersService,
-    private userRelationshipService: UserRelationshipService,
+    private readonly usersService: UsersService,
+    private readonly userRelationshipService: UserRelationshipService,
+    private readonly socket: WsGateway,
   ) {}
 
   @UseInterceptors(FileInterceptor('file', uploadProfilePicture))
@@ -94,6 +96,8 @@ export class UsersController {
   @Get('/friends')
   async indexFriends(@Req() request: Request) {
     const friends = await this.userRelationshipService.indexFriends(request);
+
+    this.socket.onSetOnline(friends, request);
 
     return friends;
   }

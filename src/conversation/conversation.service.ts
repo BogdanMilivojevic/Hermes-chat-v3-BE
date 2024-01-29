@@ -87,9 +87,9 @@ export class ConversationService {
     let prevMessageId: number = 0;
     let nextMessageId: number = 0;
     const skippedDuplicates: number[] = [];
-    for (let i = 1; i < conversation.length; i++) {
+    for (let i = 0; i < conversation.length; i++) {
       const url: string[] = [];
-      prevMessageId = conversation[i - 1].id;
+      prevMessageId = conversation[i - 1]?.id;
       nextMessageId = conversation[i + 1]?.id;
 
       if (
