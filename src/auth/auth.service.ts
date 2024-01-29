@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import { RedisService } from 'src/redis/redis.service';
 import { UsersService } from 'src/users/users.service';
 
 @Injectable()
@@ -13,6 +14,7 @@ export class AuthService {
   constructor(
     private jwtService: JwtService,
     private usersService: UsersService,
+    private redisService: RedisService,
   ) {}
 
   async registerUser(username: string, email: string, password: string) {
@@ -46,6 +48,17 @@ export class AuthService {
     if (!comparison)
       throw new UnauthorizedException('Email or password incorrect');
 
+    //Check if there is a key
+    const key = await this.redisService.hget(`user:${user.id}`, 'online');
+    console.log(key);
+    if (!key) {
+      await this.redisService.hset(`user:${user.id}`, 'online', 1);
+    }
+    //If there is, increase by one
+    if (key) {
+      await this.redisService.hincrby(`user:${user.id}`, 'online', 1);
+    }
+
     const token = await this.jwtService.signAsync({ id: user.id });
 
     return token;
@@ -57,5 +70,9 @@ export class AuthService {
     if (!user) throw new NotFoundException('No user found');
 
     return user;
+  }
+
+  async logout(id: number) {
+    await this.redisService.hincrby(`user:${id}`, 'online', -1);
   }
 }

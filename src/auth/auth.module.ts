@@ -7,11 +7,13 @@ import { User } from 'src/users/user.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { QueryModule } from 'src/query/query.module';
+import { RedisCacheModule } from 'src/redis/redis.module';
 
 @Module({
   imports: [
     SequelizeModule.forFeature([User]),
     QueryModule,
+    RedisCacheModule,
     JwtModule.registerAsync({
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({

@@ -162,12 +162,19 @@ export class UserRelationshipService {
               { type: QueryTypes.SELECT },
             );
 
-          const [id] = Object.values(conversationId[0]);
+          if (conversationId.length > 0) {
+            const [id] = Object.values(conversationId[0]);
+            response.push({
+              ...user.dataValues,
+              conversationId: id,
+            });
+          }
 
-          response.push({
-            ...user.dataValues,
-            conversationId: id,
-          });
+          if (conversationId.length === 0) {
+            response.push({
+              ...user.dataValues,
+            });
+          }
         }),
       );
 

@@ -22,16 +22,16 @@ export class WsGateway implements OnModuleInit {
     const service = this.redisService;
     this.server.on('connection', (socket) => [
       socket.on('createRoom', async function (id) {
-        //Check if there is a key
-        const key = await service.hget(`user:${id}`, 'online');
-        if (!key) {
-          await service.hset(`user:${id}`, 'online', 1);
-        }
-        //If there is, increase by one
-        if (key) {
-          await service.hincrby(`user:${id}`, 'online', 1);
-        }
-        //If there is none, create one
+        // //Check if there is a key
+        // const key = await service.hget(`user:${id}`, 'online');
+        // if (!key) {
+        //   await service.hset(`user:${id}`, 'online', 1);
+        // }
+        // //If there is, increase by one
+        // if (key) {
+        //   await service.hincrby(`user:${id}`, 'online', 1);
+        // }
+        // //If there is none, create one
         socket.join(id);
       }),
 
@@ -52,7 +52,6 @@ export class WsGateway implements OnModuleInit {
 
     //plus the sender id
     emitTo.push(request.user.id);
-    console.log(emitTo);
 
     emitTo.forEach((id) => {
       this.server.to(id).emit('onMessage', { message });
