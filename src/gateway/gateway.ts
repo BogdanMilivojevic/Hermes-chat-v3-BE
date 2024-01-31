@@ -22,16 +22,6 @@ export class WsGateway implements OnModuleInit {
     const service = this.redisService;
     this.server.on('connection', (socket) => [
       socket.on('createRoom', async function (id) {
-        // //Check if there is a key
-        // const key = await service.hget(`user:${id}`, 'online');
-        // if (!key) {
-        //   await service.hset(`user:${id}`, 'online', 1);
-        // }
-        // //If there is, increase by one
-        // if (key) {
-        //   await service.hincrby(`user:${id}`, 'online', 1);
-        // }
-        // //If there is none, create one
         socket.join(id);
       }),
 
@@ -58,8 +48,8 @@ export class WsGateway implements OnModuleInit {
     });
   }
 
-  @SubscribeMessage('setOnline')
-  onSetOnline(@MessageBody() friends: any, request: Request) {
+  @SubscribeMessage('setOnlineStatus')
+  onSetOnline(@MessageBody() friends: any, userId: number, status: boolean) {
     const emitTo = [];
 
     //all members in the conversation
@@ -67,8 +57,13 @@ export class WsGateway implements OnModuleInit {
       emitTo.push(+value.id);
     });
 
+    console.log('emitted');
+
     emitTo.forEach((id) => {
-      this.server.to(id).emit('onSetOnline', { id: request.user.id });
+      this.server.to(id).emit('onSetOnlineStatus', {
+        id: userId,
+        online: status,
+      });
     });
   }
 }

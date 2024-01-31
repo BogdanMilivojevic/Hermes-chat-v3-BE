@@ -20,6 +20,6 @@ import { RedisCacheModule } from 'src/redis/redis.module';
   ],
   controllers: [UsersController],
   providers: [UsersService, QueryService, UserRelationshipService, WsGateway],
-  exports: [UsersService],
+  exports: [UsersService, UserRelationshipService],
 })
 export class UsersModule {}

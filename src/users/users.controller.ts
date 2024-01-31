@@ -95,9 +95,9 @@ export class UsersController {
 
   @Get('/friends')
   async indexFriends(@Req() request: Request) {
-    const friends = await this.userRelationshipService.indexFriends(request);
-
-    this.socket.onSetOnline(friends, request);
+    const friends = await this.userRelationshipService.indexFriends(
+      request.user.id,
+    );
 
     return friends;
   }

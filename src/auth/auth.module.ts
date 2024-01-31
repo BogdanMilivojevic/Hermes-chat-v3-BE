@@ -8,11 +8,15 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { QueryModule } from 'src/query/query.module';
 import { RedisCacheModule } from 'src/redis/redis.module';
+import { UserRelationshipService } from 'src/users/user-relationship.service';
+import { UserRelationship } from 'src/users/user-relationship.entity';
+import { GatewayModule } from 'src/gateway/gateway.module';
 
 @Module({
   imports: [
-    SequelizeModule.forFeature([User]),
+    SequelizeModule.forFeature([User, UserRelationship]),
     QueryModule,
+    GatewayModule,
     RedisCacheModule,
     JwtModule.registerAsync({
       inject: [ConfigService],
@@ -24,7 +28,7 @@ import { RedisCacheModule } from 'src/redis/redis.module';
       }),
     }),
   ],
-  providers: [AuthService, UsersService],
+  providers: [AuthService, UsersService, UserRelationshipService],
   controllers: [AuthController],
   exports: [JwtModule],
 })
