@@ -15,6 +15,7 @@ import { MessagesModule } from './messages/messages.module';
 import { Message } from './messages/messages.entity';
 import { File } from './messages/file.entity';
 import { GatewayModule } from './gateway/gateway.module';
+import { RedisCacheModule } from './redis/redis.module';
 //IMPORT CONFIG MODULE FOR ENV BEFORE EVERYTHING SO THAT ENV CAN BE USED
 
 @Module({
@@ -25,8 +26,8 @@ import { GatewayModule } from './gateway/gateway.module';
     }),
     SequelizeModule.forRoot({
       dialect: 'postgres',
-      host: process.env.DB_HOST,
-      port: 5432,
+      host: process.env.NODE_ENV === 'development' ? 'postgres' : 'localhost',
+      port: +process.env.DB_PORT,
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database:
@@ -48,6 +49,7 @@ import { GatewayModule } from './gateway/gateway.module';
     ConversationModule,
     MessagesModule,
     GatewayModule,
+    RedisCacheModule,
   ],
   controllers: [AppController],
   providers: [AppService],

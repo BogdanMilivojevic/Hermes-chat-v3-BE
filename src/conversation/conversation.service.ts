@@ -28,17 +28,19 @@ export class ConversationService {
     const t = await this.sequelize.transaction();
 
     try {
-      await Promise.all(
-        friendsId.map(async (userId) => {
-          const friend = await this.userModel.findOne({
-            where: {
-              id: userId,
-            },
-          });
+      if (friendsId.length) {
+        await Promise.all(
+          friendsId.map(async (userId) => {
+            const friend = await this.userModel.findOne({
+              where: {
+                id: userId,
+              },
+            });
 
-          if (!friend) throw new NotFoundException('User not found');
-        }),
-      );
+            if (!friend) throw new NotFoundException('User not found');
+          }),
+        );
+      }
 
       const conversation = await this.conversationModel.create(
         {},
@@ -87,9 +89,9 @@ export class ConversationService {
     let prevMessageId: number = 0;
     let nextMessageId: number = 0;
     const skippedDuplicates: number[] = [];
-    for (let i = 1; i < conversation.length; i++) {
+    for (let i = 0; i < conversation.length; i++) {
       const url: string[] = [];
-      prevMessageId = conversation[i - 1].id;
+      prevMessageId = conversation[i - 1]?.id;
       nextMessageId = conversation[i + 1]?.id;
 
       if (

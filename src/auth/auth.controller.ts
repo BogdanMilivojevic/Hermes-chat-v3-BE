@@ -35,4 +35,10 @@ export class AuthController {
 
     return token;
   }
+
+  @UseGuards(AuthenticationGuard)
+  @Get('/logout')
+  async logout(@Req() request: Request) {
+    await this.authService.logout(request.user.id);
+  }
 }

@@ -7,12 +7,14 @@ import { AuthModule } from 'src/auth/auth.module';
 import { File } from './file.entity';
 import { ConversationModule } from 'src/conversation/conversation.module';
 import { WsGateway } from 'src/gateway/gateway';
+import { RedisCacheModule } from 'src/redis/redis.module';
 
 @Module({
   imports: [
     SequelizeModule.forFeature([Message, File]),
     AuthModule,
     ConversationModule,
+    RedisCacheModule,
   ],
   controllers: [MessagesController],
   providers: [MessagesService, WsGateway],

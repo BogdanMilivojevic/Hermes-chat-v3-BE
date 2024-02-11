@@ -30,4 +30,7 @@ export class UserResponseDto {
 
   @Expose()
   public token: string;
+
+  @Expose()
+  public online: boolean;
 }

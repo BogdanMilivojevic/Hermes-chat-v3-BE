@@ -2,9 +2,47 @@ version: '3.7'
 services:
   app:
     build: .
-    env_file: .env
+    networks:
+      - hermes-network
+    environment:
+      NODE_ENV: ${NODE_ENV}
     volumes:
       - .:/app
+    depends_on:
+      - postgres
+      - redis
     ports:
       - '4000:4000'
-    network_mode: 'host'
+
+  postgres:
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    networks:
+      - hermes-network
+    ports:
+      - '5431:5432'
+    volumes:
+      - database_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:alpine
+    restart: always
+    ports:
+      - '6379:6379'
+    networks:
+      - hermes-network
+    volumes:
+      - redis-data:/var/lib/redis/data
+
+volumes:
+  database_data:
+    driver: local
+  redis-data:
+    driver: local
+
+networks:
+  hermes-network:
+    driver: bridge

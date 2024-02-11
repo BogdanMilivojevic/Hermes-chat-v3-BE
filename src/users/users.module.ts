@@ -8,15 +8,18 @@ import { QueryService } from 'src/query/query.service';
 import { UserRelationship } from './user-relationship.entity';
 import { UserRelationshipService } from './user-relationship.service';
 import { QueryModule } from 'src/query/query.module';
+import { WsGateway } from 'src/gateway/gateway';
+import { RedisCacheModule } from 'src/redis/redis.module';
 
 @Module({
   imports: [
     SequelizeModule.forFeature([User, UserRelationship]),
     AuthModule,
     QueryModule,
+    RedisCacheModule,
   ],
   controllers: [UsersController],
-  providers: [UsersService, QueryService, UserRelationshipService],
-  exports: [UsersService],
+  providers: [UsersService, QueryService, UserRelationshipService, WsGateway],
+  exports: [UsersService, UserRelationshipService],
 })
 export class UsersModule {}

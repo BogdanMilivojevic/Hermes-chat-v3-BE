@@ -9,6 +9,7 @@ import { Op, QueryTypes } from 'sequelize';
 import { User } from './user.entity';
 import { Request } from 'express';
 import { QueryService } from 'src/query/query.service';
+import { RedisService } from 'src/redis/redis.service';
 
 @Injectable()
 export class UserRelationshipService {
@@ -17,6 +18,7 @@ export class UserRelationshipService {
     private userRelationshipModel: typeof UserRelationship,
     @InjectModel(User) private userModel: typeof User,
     private readonly queryService: QueryService,
+    private redisService: RedisService,
   ) {}
 
   async create(senderId: number, receiverId: number) {
@@ -129,13 +131,10 @@ export class UserRelationshipService {
     return 'friend request declined';
   }
 
-  async indexFriends(request: Request) {
+  async indexFriends(id: number) {
     const usersFriends = await this.userRelationshipModel.findAll({
       where: {
-        [Op.or]: [
-          { sender_user_id: request.user.id },
-          { receiver_user_id: request.user.id },
-        ],
+        [Op.or]: [{ sender_user_id: id }, { receiver_user_id: id }],
         [Op.and]: [{ type: 'friend' }],
       },
     });
@@ -145,7 +144,7 @@ export class UserRelationshipService {
       await Promise.all(
         usersFriends.map(async (value) => {
           const userId =
-            value.sender_user_id === request.user.id
+            value.sender_user_id === id
               ? value.receiver_user_id
               : value.sender_user_id;
           const user = await this.userModel.findOne({
@@ -154,7 +153,7 @@ export class UserRelationshipService {
             },
           });
 
-          const users = [request.user.id, user.id];
+          const users = [id, user.id];
 
           const conversationId =
             await this.userRelationshipModel.sequelize.query(
@@ -162,12 +161,40 @@ export class UserRelationshipService {
               { type: QueryTypes.SELECT },
             );
 
-          const [id] = Object.values(conversationId[0]);
+          if (conversationId.length > 0) {
+            const [id] = Object.values(conversationId[0]);
+            response.push({
+              ...user.dataValues,
+              conversationId: id,
+            });
+          }
 
-          response.push({
-            ...user.dataValues,
-            conversationId: id,
-          });
+          if (conversationId.length === 0) {
+            response.push({
+              ...user.dataValues,
+            });
+          }
+        }),
+      );
+
+      await Promise.all(
+        response.map(async (res) => {
+          const online = await this.redisService.hget(
+            `user:${res.id}`,
+            'online',
+          );
+
+          if (+online > 0) {
+            res.online = true;
+          }
+
+          if (+online === 0) {
+            res.online = false;
+          }
+
+          if (!online) {
+            res.online = false;
+          }
         }),
       );
 
