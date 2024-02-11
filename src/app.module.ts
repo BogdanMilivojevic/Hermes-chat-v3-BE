@@ -18,18 +18,15 @@ import { GatewayModule } from './gateway/gateway.module';
 import { RedisCacheModule } from './redis/redis.module';
 //IMPORT CONFIG MODULE FOR ENV BEFORE EVERYTHING SO THAT ENV CAN BE USED
 
-console.log(process.env.NODE_ENV);
-
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: [`.env`],
     }),
-    // CacheModule.registerAsync(RedisOptions),
     SequelizeModule.forRoot({
       dialect: 'postgres',
-      host: process.env.DB_HOST,
+      host: process.env.NODE_ENV === 'development' ? 'postgres' : 'localhost',
       port: +process.env.DB_PORT,
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,

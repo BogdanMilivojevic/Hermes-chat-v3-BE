@@ -54,6 +54,7 @@ export class AuthService {
 
     //Check if there is a key
     const key = await this.redisService.hget(`user:${user.id}`, 'online');
+
     if (!key) {
       await this.redisService.hset(`user:${user.id}`, 'online', 1);
     }

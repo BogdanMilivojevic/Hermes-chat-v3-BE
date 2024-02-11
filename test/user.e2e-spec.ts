@@ -29,14 +29,6 @@ describe('User update test (e2e)', () => {
     });
   });
 
-  //   afterEach(async () => {
-  //     await User.destroy({
-  //       where: {
-  //         id: user.id,
-  //       },
-  //     });
-  //   });
-
   it('should return 200 if the user updates his credentials', () => {
     return request(app.getHttpServer())
       .patch('/users/me')

@@ -28,17 +28,19 @@ export class ConversationService {
     const t = await this.sequelize.transaction();
 
     try {
-      await Promise.all(
-        friendsId.map(async (userId) => {
-          const friend = await this.userModel.findOne({
-            where: {
-              id: userId,
-            },
-          });
+      if (friendsId.length) {
+        await Promise.all(
+          friendsId.map(async (userId) => {
+            const friend = await this.userModel.findOne({
+              where: {
+                id: userId,
+              },
+            });
 
-          if (!friend) throw new NotFoundException('User not found');
-        }),
-      );
+            if (!friend) throw new NotFoundException('User not found');
+          }),
+        );
+      }
 
       const conversation = await this.conversationModel.create(
         {},
