@@ -11,10 +11,11 @@ import { RedisCacheModule } from 'src/redis/redis.module';
 import { UserRelationshipService } from 'src/users/user-relationship.service';
 import { UserRelationship } from 'src/users/user-relationship.entity';
 import { GatewayModule } from 'src/gateway/gateway.module';
+import { Conversation } from 'src/conversation/conversation.entity';
 
 @Module({
   imports: [
-    SequelizeModule.forFeature([User, UserRelationship]),
+    SequelizeModule.forFeature([User, UserRelationship, Conversation]),
     QueryModule,
     GatewayModule,
     RedisCacheModule,

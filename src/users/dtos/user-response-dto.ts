@@ -33,4 +33,7 @@ export class UserResponseDto {
 
   @Expose()
   public online: boolean;
+
+  @Expose()
+  public lastMessage: string;
 }
