@@ -49,6 +49,7 @@ export class MessagesService {
       await this.conversationModel.update(
         {
           last_message: body.text ? body.text : 'file/s',
+          last_message_sender: req.user.id,
         },
         {
           where: {

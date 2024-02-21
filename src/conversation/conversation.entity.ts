@@ -14,6 +14,9 @@ export class Conversation extends Model {
   @Column
   last_message: string;
 
+  @Column
+  last_message_sender: number;
+
   @HasMany(() => ConversationUser)
   conversationUser: ConversationUser[];
 

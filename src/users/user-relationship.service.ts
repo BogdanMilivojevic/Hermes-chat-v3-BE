@@ -176,6 +176,7 @@ export class UserRelationshipService {
               ...user.dataValues,
               conversationId: id,
               lastMessage: conversation.last_message,
+              lastMessageSenderId: conversation.last_message_sender,
             });
           }
 
