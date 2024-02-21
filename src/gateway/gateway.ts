@@ -9,17 +9,13 @@ import {
 import { Request } from 'express';
 import { Server } from 'socket.io';
 import { Message } from 'src/messages/messages.entity';
-import { RedisService } from 'src/redis/redis.service';
 
 @WebSocketGateway({ cors: true })
 export class WsGateway implements OnModuleInit {
   @WebSocketServer()
   server: Server;
 
-  constructor(private redisService: RedisService) {}
-
   onModuleInit() {
-    const service = this.redisService;
     this.server.on('connection', (socket) => [
       socket.on('createRoom', async function (id) {
         socket.join(id);
@@ -44,7 +40,7 @@ export class WsGateway implements OnModuleInit {
     emitTo.push(request.user.id);
 
     emitTo.forEach((id) => {
-      this.server.to(id).emit('onMessage', { message });
+      this.server.to(id).emit('onMessage', { ...message });
     });
   }
 
@@ -56,8 +52,6 @@ export class WsGateway implements OnModuleInit {
     friends.forEach((value) => {
       emitTo.push(+value.id);
     });
-
-    console.log('emitted');
 
     emitTo.forEach((id) => {
       this.server.to(id).emit('onSetOnlineStatus', {

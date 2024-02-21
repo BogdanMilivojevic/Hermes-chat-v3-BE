@@ -19,8 +19,6 @@ export class ConversationService {
     @InjectModel(ConversationUser)
     private conversationUserModel: typeof ConversationUser,
     @InjectModel(User) private userModel: typeof User,
-    @InjectModel(Message) private messageModel: typeof Message,
-    @InjectModel(File) private fileModel: typeof File,
     private readonly queryService: QueryService,
   ) {}
 

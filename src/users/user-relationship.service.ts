@@ -10,6 +10,7 @@ import { User } from './user.entity';
 import { Request } from 'express';
 import { QueryService } from 'src/query/query.service';
 import { RedisService } from 'src/redis/redis.service';
+import { Conversation } from 'src/conversation/conversation.entity';
 
 @Injectable()
 export class UserRelationshipService {
@@ -17,6 +18,8 @@ export class UserRelationshipService {
     @InjectModel(UserRelationship)
     private userRelationshipModel: typeof UserRelationship,
     @InjectModel(User) private userModel: typeof User,
+    @InjectModel(Conversation)
+    private readonly conversationModel: typeof Conversation,
     private readonly queryService: QueryService,
     private redisService: RedisService,
   ) {}
@@ -163,9 +166,17 @@ export class UserRelationshipService {
 
           if (conversationId.length > 0) {
             const [id] = Object.values(conversationId[0]);
+
+            const conversation = await this.conversationModel.findOne({
+              where: {
+                id: id,
+              },
+            });
             response.push({
               ...user.dataValues,
               conversationId: id,
+              lastMessage: conversation.last_message,
+              lastMessageSenderId: conversation.last_message_sender,
             });
           }
 

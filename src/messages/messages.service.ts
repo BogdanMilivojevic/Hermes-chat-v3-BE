@@ -6,11 +6,14 @@ import { ConversationService } from 'src/conversation/conversation.service';
 import { Sequelize } from 'sequelize-typescript';
 import { File } from './file.entity';
 import { CreateMessageDto } from './dtos/create-message.dto';
+import { Conversation } from 'src/conversation/conversation.entity';
 
 @Injectable()
 export class MessagesService {
   constructor(
     @InjectModel(Message) private messageModel: typeof Message,
+    @InjectModel(Conversation)
+    private readonly conversationModel: typeof Conversation,
     private readonly conversationService: ConversationService,
     private readonly sequelize: Sequelize,
     @InjectModel(File) private readonly fileModel: typeof File,
@@ -41,6 +44,19 @@ export class MessagesService {
           text: body.text,
         },
         { transaction: t },
+      );
+
+      await this.conversationModel.update(
+        {
+          last_message: body.text ? body.text : 'file/s',
+          last_message_sender: req.user.id,
+        },
+        {
+          where: {
+            id: body.conversationId ? body.conversationId : conversation.id,
+          },
+          transaction: t,
+        },
       );
 
       if (files) {
