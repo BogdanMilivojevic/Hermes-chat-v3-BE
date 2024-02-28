@@ -1,26 +1,46 @@
-# Base image
-FROM node:18.9
+## ===========================================================> The common stage
+FROM node:18-alpine AS base
+ENV NODE_ENV=production
 
-# Create app directory
 WORKDIR /app
 
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
 COPY package*.json ./
+RUN npm ci --only=production
 
-# Install app dependencies
-RUN npm install
+## Remove unnecessary files from `node_modules` directory
+RUN ( wget -q -O /dev/stdout https://gobinaries.com/tj/node-prune | sh ) \
+ && node-prune
 
-# Bundle app source
+
+## ======================================================> The build image stage
+FROM base AS build
+ENV NODE_ENV=development
+
 COPY . .
-
-# Creates a "dist" folder with the production build
+## This step could install only the missing dependencies (ie., development deps ones)
+## but there's no way to do that with this NPM version
+RUN npm ci
+## Compile the TypeScript source code
 RUN npm run build
+
+
+## =================================================> The production image stage
+FROM node:18-alpine AS prod
+ENV NODE_ENV=production
 
 EXPOSE 4000
 
-ARG NODE_ENV
-ENV NODE_ENV $NODE_ENV
+HEALTHCHECK --interval=10m --timeout=5s --retries=3 \
+        CMD wget --no-verbose --tries=1 --spider http://localhost:$PORT || exit 1
 
+WORKDIR /app
+## Copy required file to run the production application
+COPY --from=base --chown=node:node /app/node_modules ./node_modules
+COPY --from=base --chown=node:node /app/*.json ./
+COPY --from=build --chown=node:node /app/dist ./dist/
+
+## Dropping privileges
+USER node
 
 CMD if [ "$NODE_ENV" = "production" ]; \
 then npm run start; \

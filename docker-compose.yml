@@ -4,10 +4,10 @@ services:
     build: .
     networks:
       - hermes-network
-    environment:
-      NODE_ENV: ${NODE_ENV}
+    env_file:
+      - .env
     volumes:
-      - .:/app
+      - ./uploads:/app/uploads
     depends_on:
       - postgres
       - redis
