@@ -4,6 +4,7 @@ services:
     build: .
     networks:
       - hermes-network
+    container_name: backend
     env_file:
       - .env
     volumes:
