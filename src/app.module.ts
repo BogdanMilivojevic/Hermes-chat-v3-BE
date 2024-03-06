@@ -26,14 +26,12 @@ import { RedisCacheModule } from './redis/redis.module';
     }),
     SequelizeModule.forRoot({
       dialect: 'postgres',
-      host: process.env.NODE_ENV === 'development' ? 'postgres' : 'localhost',
+      host: process.env.DB_HOST,
       port: +process.env.DB_PORT,
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database:
-        process.env.NODE_ENV === 'development'
-          ? process.env.DB_DEV
-          : process.env.DB_TEST,
+        process.env.NODE_ENV !== 'test' ? process.env.DB : process.env.DB_TEST,
       models: [
         User,
         UserRelationship,

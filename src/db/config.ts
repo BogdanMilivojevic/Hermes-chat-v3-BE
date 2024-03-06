@@ -11,7 +11,7 @@ module.exports = {
   },
   test: {
     dialect: 'postgres',
-    host: process.env.NODE_ENV === 'development' ? 'postgres' : 'localhost',
+    host: process.env.DB_HOST,
     port: process.env.DB_PORT,
     username: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
