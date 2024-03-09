@@ -8,6 +8,8 @@ import { HttpExceptionFilter } from './exceptions.filter';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
+  app.setGlobalPrefix('api');
+
   app.useStaticAssets(join(__dirname, '..', 'uploads'), {
     index: false,
     prefix: '/uploads',

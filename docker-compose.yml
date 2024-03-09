@@ -8,7 +8,7 @@ services:
     env_file:
       - .env
     volumes:
-      - ./uploads:/app/uploads
+      - .:/app
     depends_on:
       - postgres
       - redis
@@ -49,3 +49,4 @@ volumes:
 networks:
   hermes-network:
     driver: bridge
+    name: hermes-network
