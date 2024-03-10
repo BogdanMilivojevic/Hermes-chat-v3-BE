@@ -8,11 +8,11 @@ import { HttpExceptionFilter } from './exceptions.filter';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
-  app.setGlobalPrefix('api');
+  process.env.NODE_ENV === 'production' ? app.setGlobalPrefix('api') : '';
 
   app.useStaticAssets(join(__dirname, '..', 'uploads'), {
     index: false,
-    prefix: '/uploads',
+    prefix: process.env.NODE_ENV === 'production' ? '/api/uploads' : '/uploads',
   });
 
   app.useGlobalPipes(new ValidationPipe());
