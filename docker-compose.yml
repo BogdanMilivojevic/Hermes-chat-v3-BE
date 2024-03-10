@@ -10,6 +10,8 @@ services:
     volumes:
       - ./:/app
       - /app/node_modules
+      - /app/dist
+      - /app/uploads
     depends_on:
       - postgres
       - redis
