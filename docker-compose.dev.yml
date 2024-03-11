@@ -8,8 +8,7 @@ services:
     env_file:
       - .env
     volumes:
-      - ./:/app
-      - /app/node_modules
+      - .:/app
     depends_on:
       - postgres
       - redis
