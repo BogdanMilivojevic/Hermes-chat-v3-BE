@@ -8,7 +8,8 @@ services:
     env_file:
       - .env
     volumes:
-      - .:/app
+      - /app/src
+      - /app/uploads
     depends_on:
       - postgres
       - redis
