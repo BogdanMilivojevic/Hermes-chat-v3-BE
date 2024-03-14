@@ -34,7 +34,7 @@
 - **Clone the repository**
 
 ```
-git clone https://github.com/BogdanMilivojevic/Hermes-chat-v3-FE.git
+git clone https://github.com/BogdanMilivojevic/Hermes-chat-v3-BE.git
 ```
 
 - **Create .env file following the .env.example**
