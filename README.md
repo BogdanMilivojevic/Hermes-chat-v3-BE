@@ -69,7 +69,7 @@ exit the container
 Down the container with
 
 ```
-docker copmose down
+docker compose down
 ```
 
 ### Step 4
@@ -77,7 +77,7 @@ docker copmose down
 To run the app in development use .dev compose file with
 
 ```
-docker copmose -f docker-compose.dev.yml
+docker compose -f docker-compose.dev.yml
 ```
 
 ## Testing
