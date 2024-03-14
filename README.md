@@ -1,73 +1,98 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+![Testing](https://github.com/BogdanMilivojevic/Hermes-chat-v3-BE/actions/workflows/pull.yml/badge.svg)
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
-
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+# Hermes-chat-v3-FE
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+#### Hermes-chat-v3-BE is a backend for a real-time messaging app which is available at: [https://hermes-chat.bogdanmilivojevic.com/](https://hermes-chat.bogdanmilivojevic.com/)
+
+## Resources used
+
+- [Nest.js](https://nestjs.com/)
+- [Typescript](https://www.typescriptlang.org/)
+- [Docker](https://www.docker.com/)
+- [Postgres](https://www.postgresql.org/)
+- [Sequelize](https://sequelize.org/)
+- [Redis](https://redis.io/)
+- [Jest](https://jestjs.io/)
+
+## Features
+
+- Websocket enables real-time messaging
+- Websocket together with Redis enables display of online status for users
+- Image, video and document sharing between users
+- Friend request must be accepted before conversation is initialiased
+- CI-CD pipeline which makes test passing a requirement for a successful merge
+- Tests are made with jest
 
 ## Installation
 
-```bash
-$ npm install
+### Step 1
+
+#### Installed docker engine on your machine is a prerequisite
+
+- **Clone the repository**
+
+```
+git clone https://github.com/BogdanMilivojevic/Hermes-chat-v3-FE.git
 ```
 
-## Running the app
+- **Create .env file following the .env.example**
 
-```bash
-# development
-$ npm run start
+- **Build docker image**
 
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+```
+ docker compose build
 ```
 
-## Test
+### Step 2
 
-```bash
-# unit tests
-$ npm run test
+All commands should be run inside of the container which can be accessed by running ./bin/container from the root
 
-# e2e tests
-$ npm run test:e2e
+When inside the container, run the following npm commands:
 
-# test coverage
-$ npm run test:cov
+to create a database:
+
+```
+npm run db:create
 ```
 
-## Support
+run migrations:
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```
+npm run db:migrate
+```
 
-## Stay in touch
+### Step 3
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+The web app should be available at localhost:4000
 
-## License
+## Testing
 
-Nest is [MIT licensed](LICENSE).
+### Step 1
+
+To run tests you should also run ./bin/container from the root in order to open the container
+
+Set the NODE_ENV to test
+
+### Step 2
+
+Create database
+
+```
+npm run db:create
+```
+
+Run migrations
+
+```
+npm run db:migrate
+```
+
+### Step 3
+
+Run tests
+
+```
+npm run test:e2e
+```
