@@ -62,10 +62,23 @@ run migrations:
 ```
 npm run db:migrate
 ```
-
 ### Step 3
 
-The web app should be available at localhost:4000
+exit the container
+
+Down the container with
+
+```
+docker copmose down
+```
+
+### Step 4
+
+To run the app in development use .dev compose file with
+
+```
+docker copmose -f docker-compose.dev.yml
+```
 
 ## Testing
 
