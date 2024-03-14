@@ -1,6 +1,6 @@
 ![Testing](https://github.com/BogdanMilivojevic/Hermes-chat-v3-BE/actions/workflows/pull.yml/badge.svg)
 
-# Hermes-chat-v3-FE
+# Hermes-chat-v3-BE
 
 ## Description
 
