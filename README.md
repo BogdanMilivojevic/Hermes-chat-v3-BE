@@ -77,7 +77,7 @@ docker compose down
 To run the app in development use .dev compose file with
 
 ```
-docker compose -f docker-compose.dev.yml
+docker compose -f docker-compose.dev.yml up
 ```
 
 ## Testing
